@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
+const GOOGLE_CLIENT_ID = '840076504590-v7tdndm1grlulv3sofeku0ns9m4rokeo.apps.googleusercontent.com';
 
 interface Props {
   onCredential: (credential: string) => void;
