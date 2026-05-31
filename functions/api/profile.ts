@@ -39,26 +39,19 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
   const bio = typeof body.bio === 'string' ? body.bio.slice(0, 500) : null;
   const location = typeof body.location === 'string' ? body.location.slice(0, 100) : null;
   const company = typeof body.company === 'string' ? body.company.slice(0, 100) : null;
-  const role = typeof body.role === 'string' && ALLOWED_ROLES.includes(body.role) ? body.role : null;
+  const contact_email = typeof body.contact_email === 'string' ? body.contact_email.slice(0, 200) : null;
   const linkedin_url = typeof body.linkedin_url === 'string' ? body.linkedin_url.slice(0, 300) : null;
-  const twitter_url = typeof body.twitter_url === 'string' ? body.twitter_url.slice(0, 300) : null;
-  const website_url = typeof body.website_url === 'string' ? body.website_url.slice(0, 300) : null;
-
-  const rawTech = Array.isArray(body.tech_stack) ? body.tech_stack : [];
-  const tech_stack = JSON.stringify(
-    rawTech.filter((t): t is string => typeof t === 'string' && ALLOWED_TECH.includes(t)),
-  );
 
   await env.DB.prepare(
     `UPDATE members SET
-      name = ?, bio = ?, location = ?, company = ?, role = ?,
-      tech_stack = ?, linkedin_url = ?, twitter_url = ?, website_url = ?,
+      name = ?, bio = ?, location = ?, company = ?,
+      contact_email = ?, linkedin_url = ?,
       updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, role, tech_stack, linkedin_url, twitter_url, website_url, user.id)
+    .bind(name, bio, location, company, contact_email, linkedin_url, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?').bind(user.id).first();
-  return json({ user: { ...(updated as object), tech_stack: parseTechStack(tech_stack) } });
+  return json({ user: { ...(updated as object), tech_stack: parseTechStack(user.tech_stack) } });
 };

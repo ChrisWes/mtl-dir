@@ -14,6 +14,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     bio: user.bio ?? '',
     location: user.location ?? '',
     company: user.company ?? '',
+    contact_email: user.contact_email ?? '',
     linkedin_url: user.linkedin_url ?? '',
   });
   const [saving, setSaving] = useState(false);
@@ -77,6 +78,10 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
               <input className="dkinput" value={form.location} onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))} placeholder="City, Country" />
             </Field>
           </div>
+
+          <Field label="Contact Email">
+            <input className="dkinput" type="email" value={form.contact_email} onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))} placeholder="you@company.com" />
+          </Field>
 
           <Field label="LinkedIn URL">
             <input className="dkinput" type="url" value={form.linkedin_url} onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))} placeholder="https://linkedin.com/in/..." />

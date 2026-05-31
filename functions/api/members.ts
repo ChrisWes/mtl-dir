@@ -13,7 +13,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const techFilter = searchParams.get('tech')?.trim() ?? '';
 
   const { results } = await env.DB.prepare(
-    `SELECT * FROM members WHERE status = 'approved' ORDER BY name ASC`,
+    `SELECT * FROM members WHERE status = 'approved' ORDER BY LOWER(COALESCE(name, email)) ASC`,
   ).all<MemberRow>();
 
   let members = (results ?? []).map((m) => ({
