@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Member } from '../types';
-import { ROLE_OPTIONS, TECH_OPTIONS } from '../types';
+import { ROLE_OPTIONS, TECH_OPTIONS, ADMIN_EMAIL } from '../types';
 import MemberCard from './MemberCard';
 import EditProfile from './EditProfile';
+import AdminView from './AdminView';
 
 interface Props {
   sessionToken: string;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export default function Directory({ sessionToken, currentUser, onUserUpdate, onSignOut }: Props) {
+  const isAdmin = currentUser.email === ADMIN_EMAIL;
+  const [view, setView] = useState<'members' | 'admin'>('members');
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,7 +61,33 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0 select-none">
             TL
           </div>
-          <span className="font-semibold text-gray-900 flex-1 text-sm">Tech Leaders</span>
+          <span className="font-semibold text-gray-900 text-sm">Tech Leaders</span>
+
+          {/* Nav tabs */}
+          <div className="flex items-center gap-1 flex-1">
+            <button
+              onClick={() => setView('members')}
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                view === 'members'
+                  ? 'bg-gray-100 text-gray-900 font-medium'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Directory
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setView('admin')}
+                className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                  view === 'admin'
+                    ? 'bg-gray-100 text-gray-900 font-medium'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Admin
+              </button>
+            )}
+          </div>
 
           <button
             onClick={() => setShowEdit(true)}
@@ -86,7 +115,9 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5">
+      {view === 'admin' && <AdminView sessionToken={sessionToken} />}
+
+      <main className={`max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5 ${view === 'admin' ? 'hidden' : ''}`}>
         {/* Search + filter bar */}
         <div className="flex gap-2">
           <div className="relative flex-1">

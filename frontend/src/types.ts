@@ -40,6 +40,13 @@ declare global {
   }
 }
 
+export const ADMIN_EMAIL = 'chris.weston@gmail.com';
+
+export interface AdminUser extends Member {
+  created_at: string;
+  updated_at: string;
+}
+
 export const TECH_OPTIONS = [
   'React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Remix',
   'Node.js', 'Python', 'Go', 'Rust', 'Java', 'Kotlin', 'Swift', 'TypeScript',
