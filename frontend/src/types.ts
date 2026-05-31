@@ -47,13 +47,6 @@ export interface AdminUser extends Member {
   updated_at: string;
 }
 
-export const TECH_OPTIONS = [
-  'React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Remix',
-  'Node.js', 'Python', 'Go', 'Rust', 'Java', 'Kotlin', 'Swift', 'TypeScript',
-  'GraphQL', 'tRPC', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis',
-  'AWS', 'GCP', 'Azure', 'Docker', 'Kubernetes', 'Terraform',
-] as const;
-
 export const ROLE_OPTIONS = [
   'CTO', 'VP Engineering', 'Director of Engineering', 'Engineering Manager',
   'Staff Engineer', 'Principal Engineer', 'Senior Engineer', 'Architect',

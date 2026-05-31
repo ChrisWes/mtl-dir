@@ -2,9 +2,10 @@ import type { Member } from '../types';
 
 interface Props {
   member: Member;
+  onClick: () => void;
 }
 
-export default function MemberCard({ member }: Props) {
+export default function MemberCard({ member, onClick }: Props) {
   const initials = (member.name ?? member.email)
     .split(' ')
     .slice(0, 2)
@@ -13,7 +14,10 @@ export default function MemberCard({ member }: Props) {
     .toUpperCase();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-4">
+    <button
+      onClick={onClick}
+      className="text-left bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all p-5 flex flex-col gap-3 w-full"
+    >
       <div className="flex items-start gap-3">
         {member.avatar_url ? (
           <img src={member.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover shrink-0" />
@@ -31,10 +35,13 @@ export default function MemberCard({ member }: Props) {
             <p className="text-sm text-blue-600 truncate">{member.company}</p>
           )}
         </div>
+        <svg className="w-4 h-4 text-gray-300 shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
       </div>
 
       {member.bio && (
-        <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{member.bio}</p>
+        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{member.bio}</p>
       )}
 
       {member.location && (
@@ -46,39 +53,6 @@ export default function MemberCard({ member }: Props) {
           {member.location}
         </div>
       )}
-
-      {member.tech_stack.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {member.tech_stack.slice(0, 6).map((tech) => (
-            <span key={tech} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-md">
-              {tech}
-            </span>
-          ))}
-          {member.tech_stack.length > 6 && (
-            <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs rounded-md">
-              +{member.tech_stack.length - 6}
-            </span>
-          )}
-        </div>
-      )}
-
-      <div className="flex items-center gap-3 pt-1 border-t border-gray-50">
-        {member.linkedin_url && (
-          <a href={member.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-            LinkedIn
-          </a>
-        )}
-        {member.twitter_url && (
-          <a href={member.twitter_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-            Twitter/X
-          </a>
-        )}
-        {member.website_url && (
-          <a href={member.website_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline truncate">
-            Website
-          </a>
-        )}
-      </div>
-    </div>
+    </button>
   );
 }

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Member } from '../types';
-import { ROLE_OPTIONS, TECH_OPTIONS, ADMIN_EMAIL } from '../types';
+import { ROLE_OPTIONS, ADMIN_EMAIL } from '../types';
 import MemberCard from './MemberCard';
+import MemberProfile from './MemberProfile';
 import EditProfile from './EditProfile';
 import AdminView from './AdminView';
 
@@ -14,13 +15,13 @@ interface Props {
 
 export default function Directory({ sessionToken, currentUser, onUserUpdate, onSignOut }: Props) {
   const isAdmin = currentUser.email === ADMIN_EMAIL;
-  const [view, setView] = useState<'members' | 'admin'>('members');
+  const [view, setView] = useState<'members' | 'admin' | 'profile'>('members');
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
-  const [techFilter, setTechFilter] = useState('');
   const [showEdit, setShowEdit] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -31,7 +32,6 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
       const params = new URLSearchParams();
       if (search) params.set('q', search);
       if (roleFilter) params.set('role', roleFilter);
-      if (techFilter) params.set('tech', techFilter);
 
       const res = await fetch(`/api/members?${params}`, {
         headers: { Authorization: `Bearer ${sessionToken}` },
@@ -44,14 +44,14 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
     } finally {
       setLoading(false);
     }
-  }, [sessionToken, search, roleFilter, techFilter]);
+  }, [sessionToken, search, roleFilter]);
 
   useEffect(() => {
     const t = setTimeout(fetchMembers, search ? 300 : 0);
     return () => clearTimeout(t);
   }, [fetchMembers, search]);
 
-  const activeFilters = [roleFilter, techFilter].filter(Boolean).length;
+  const activeFilters = [roleFilter].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -117,7 +117,11 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
 
       {view === 'admin' && <AdminView sessionToken={sessionToken} />}
 
-      <main className={`max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5 ${view === 'admin' ? 'hidden' : ''}`}>
+      {view === 'profile' && selectedMember && (
+        <MemberProfile member={selectedMember} onBack={() => setView('members')} />
+      )}
+
+      <main className={`max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5 ${view !== 'members' ? 'hidden' : ''}`}>
         {/* Search + filter bar */}
         <div className="flex gap-2">
           <div className="relative flex-1">
@@ -171,24 +175,13 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
                 {ROLE_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
-            <div className="flex-1">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5 block">Tech Stack</label>
-              <select
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500"
-                value={techFilter}
-                onChange={(e) => setTechFilter(e.target.value)}
-              >
-                <option value="">All technologies</option>
-                {TECH_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
-            </div>
             {activeFilters > 0 && (
               <div className="flex items-end">
                 <button
-                  onClick={() => { setRoleFilter(''); setTechFilter(''); }}
+                  onClick={() => setRoleFilter('')}
                   className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors"
                 >
-                  Clear all
+                  Clear
                 </button>
               </div>
             )}
@@ -219,7 +212,7 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {members.map((m) => (
-            <MemberCard key={m.id} member={m} />
+            <MemberCard key={m.id} member={m} onClick={() => { setSelectedMember(m); setView('profile'); }} />
           ))}
         </div>
       </main>

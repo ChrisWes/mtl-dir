@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Member } from '../types';
-import { TECH_OPTIONS, ROLE_OPTIONS } from '../types';
+import { ROLE_OPTIONS } from '../types';
 
 interface Props {
   user: Member;
@@ -16,22 +16,12 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     location: user.location ?? '',
     company: user.company ?? '',
     role: user.role ?? '',
-    tech_stack: user.tech_stack ?? [],
     linkedin_url: user.linkedin_url ?? '',
     twitter_url: user.twitter_url ?? '',
     website_url: user.website_url ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-
-  const toggleTech = (tech: string) => {
-    setForm((f) => ({
-      ...f,
-      tech_stack: f.tech_stack.includes(tech)
-        ? f.tech_stack.filter((t) => t !== tech)
-        : [...f.tech_stack, tech],
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,28 +96,6 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
                 <option key={r} value={r}>{r}</option>
               ))}
             </select>
-          </Field>
-
-          <Field label="Tech Stack">
-            <div className="flex flex-wrap gap-2">
-              {TECH_OPTIONS.map((tech) => {
-                const active = form.tech_stack.includes(tech);
-                return (
-                  <button
-                    key={tech}
-                    type="button"
-                    onClick={() => toggleTech(tech)}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ${
-                      active
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
-                    }`}
-                  >
-                    {tech}
-                  </button>
-                );
-              })}
-            </div>
           </Field>
 
           <Field label="LinkedIn URL">
