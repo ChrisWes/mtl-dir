@@ -19,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
   return json({
-    user: { ...user, tech_stack: parseTechStack(user.tech_stack) },
+    user: { ...user, tech_stack: parseTechStack(user.tech_stack), ask_me_about: parseTechStack(user.ask_me_about) },
   });
 };
 

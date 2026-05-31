@@ -49,6 +49,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       company: string | null;
       role: string | null;
       tech_stack: string;
+      ask_me_about: string;
       linkedin_url: string | null;
       twitter_url: string | null;
       website_url: string | null;
@@ -80,6 +81,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     user: {
       ...member,
       tech_stack: (() => { try { return JSON.parse(member.tech_stack ?? '[]'); } catch { return []; } })(),
+      ask_me_about: (() => { try { return JSON.parse(member.ask_me_about ?? '[]'); } catch { return []; } })(),
     },
   });
 };

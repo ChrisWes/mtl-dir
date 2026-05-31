@@ -19,6 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   let members = (results ?? []).map((m) => ({
     ...m,
     tech_stack: parseTechStack(m.tech_stack),
+    ask_me_about: parseTechStack(m.ask_me_about),
   }));
 
   if (q) {
