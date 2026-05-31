@@ -23,7 +23,7 @@ export default function MemberCard({ member, onClick }: Props) {
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-zinc-100 truncate">{member.name ?? member.email}</p>
+          <p className="font-display font-bold text-zinc-100 truncate tracking-wide">{member.name ?? member.email}</p>
           {member.company && (
             <p className="text-sm text-violet-400 truncate mt-0.5">{member.company}</p>
           )}

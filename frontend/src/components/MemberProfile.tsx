@@ -45,7 +45,7 @@ export default function MemberProfile({ member, onBack }: Props) {
           </div>
 
           {/* Name */}
-          <h1 className="text-xl font-bold text-zinc-100">{member.name ?? member.email}</h1>
+          <h1 className="font-display text-2xl font-bold text-zinc-100 tracking-wide">{member.name ?? member.email}</h1>
 
           {/* Key facts */}
           <div className="mt-4 flex flex-col gap-2.5">

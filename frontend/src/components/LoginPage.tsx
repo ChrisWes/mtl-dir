@@ -54,10 +54,10 @@ export default function LoginPage({ onCredential }: Props) {
       <div className="relative w-full max-w-sm flex flex-col items-center gap-10">
         {/* Brand */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="bg-white rounded-3xl px-8 py-5 shadow-2xl shadow-black/40">
-            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-24 w-auto" />
+          <div className="bg-white rounded-2xl px-7 py-4 shadow-2xl shadow-black/40">
+            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-16 w-auto" />
           </div>
-          <p className="text-sm text-violet-400/80 italic font-medium">
+          <p className="font-display text-sm tracking-wide text-violet-400/80 italic font-semibold">
             Run by the community, for the community
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function LoginPage({ onCredential }: Props) {
         {/* Sign-in card */}
         <div className="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-2xl shadow-black/60 backdrop-blur-sm">
           <div className="text-center">
-            <p className="text-sm font-medium text-zinc-300">Member sign-in</p>
+            <p className="font-display text-base font-bold text-zinc-200 tracking-wide">Member sign-in</p>
             <p className="text-xs text-zinc-500 mt-1">Access is restricted to approved members</p>
           </div>
 

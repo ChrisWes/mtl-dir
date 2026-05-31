@@ -108,7 +108,7 @@ function Stat({ label, value, valueClass = 'text-zinc-100' }: {
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3">
       <p className="text-xs text-zinc-600 uppercase tracking-widest mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${valueClass}`}>{value}</p>
+      <p className={`font-display text-2xl font-bold ${valueClass}`}>{value}</p>
     </div>
   );
 }
