@@ -7,41 +7,50 @@ interface Props {
 
 export default function PendingPage({ user, onSignOut }: Props) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-          <svg className="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-amber-600/8 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-8 flex flex-col items-center gap-6 text-center shadow-2xl shadow-black/60">
+        {/* MTL badge */}
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-black select-none">
+          MTL
+        </div>
+
+        {/* Lock icon */}
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
           </svg>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-semibold text-gray-900">Access Restricted</h1>
-          <p className="text-sm text-gray-500">
+        <div>
+          <h1 className="text-lg font-semibold text-zinc-100">Access Restricted</h1>
+          <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
             Please PM the admin to whitelist your email.
           </p>
         </div>
 
-        <div className="w-full bg-gray-50 rounded-xl p-4 text-left">
-          <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Signed in as</p>
+        {/* User info */}
+        <div className="w-full bg-zinc-800/60 border border-zinc-700/50 rounded-xl p-4 text-left">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2.5">Signed in as</p>
           <div className="flex items-center gap-3">
             {user.avatar_url ? (
-              <img src={user.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+              <img src={user.avatar_url} alt="" className="w-9 h-9 rounded-full ring-1 ring-zinc-700" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-semibold">
+              <div className="w-9 h-9 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-sm font-semibold ring-1 ring-violet-500/30">
                 {(user.name ?? user.email)[0].toUpperCase()}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user.name ?? 'No name'}</p>
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+              <p className="text-sm font-medium text-zinc-200 truncate">{user.name ?? 'No name'}</p>
+              <p className="text-xs text-zinc-500 truncate">{user.email}</p>
             </div>
           </div>
         </div>
 
         <button
           onClick={onSignOut}
-          className="w-full py-2.5 px-4 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+          className="w-full py-2.5 px-4 text-sm font-medium text-zinc-400 bg-zinc-800 hover:bg-zinc-700 hover:text-zinc-200 rounded-xl transition-colors"
         >
           Sign out
         </button>

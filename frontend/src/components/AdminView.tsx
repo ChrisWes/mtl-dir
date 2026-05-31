@@ -35,18 +35,12 @@ export default function AdminView({ sessionToken }: Props) {
   const toggleStatus = async (user: AdminUser) => {
     const next = user.status === 'approved' ? 'pending' : 'approved';
     setTogglingId(user.id);
-    // Optimistic update
     setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: next } : u));
     try {
       const res = await fetch('/api/admin/users', {
-        method: 'PATCH',
-        headers,
-        body: JSON.stringify({ id: user.id, status: next }),
+        method: 'PATCH', headers, body: JSON.stringify({ id: user.id, status: next }),
       });
-      if (!res.ok) {
-        // Revert on failure
-        setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
-      }
+      if (!res.ok) setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
     } catch {
       setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
     } finally {
@@ -58,9 +52,7 @@ export default function AdminView({ sessionToken }: Props) {
     setDeletingId(id);
     try {
       const res = await fetch(`/api/admin/users?id=${id}`, { method: 'DELETE', headers });
-      if (res.ok) {
-        setUsers((prev) => prev.filter((u) => u.id !== id));
-      }
+      if (res.ok) setUsers((prev) => prev.filter((u) => u.id !== id));
     } finally {
       setDeletingId(null);
       setConfirmDelete(null);
@@ -73,22 +65,22 @@ export default function AdminView({ sessionToken }: Props) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5">
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <Stat label="Total" value={users.length} />
-        <Stat label="Approved" value={approved} color="text-green-600" />
-        <Stat label="Pending" value={pending} color="text-amber-500" className="col-span-2 sm:col-span-1" />
+        <Stat label="Approved" value={approved} valueClass="text-emerald-400" />
+        <Stat label="Pending" value={pending} valueClass="text-amber-400" />
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-sm text-red-700">{error}</div>
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400">{error}</div>
       )}
 
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-7 h-7 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-[3px] border-violet-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : users.length === 0 ? (
-        <p className="text-center py-16 text-sm text-gray-400">No users yet.</p>
+        <p className="text-center py-16 text-sm text-zinc-600">No users yet.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {users.map((user) => (
@@ -110,13 +102,13 @@ export default function AdminView({ sessionToken }: Props) {
   );
 }
 
-function Stat({ label, value, color = 'text-gray-900', className = '' }: {
-  label: string; value: number; color?: string; className?: string;
+function Stat({ label, value, valueClass = 'text-zinc-100' }: {
+  label: string; value: number; valueClass?: string;
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 ${className}`}>
-      <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className={`text-2xl font-semibold ${color}`}>{value}</p>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3">
+      <p className="text-xs text-zinc-600 uppercase tracking-widest mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${valueClass}`}>{value}</p>
     </div>
   );
 }
@@ -142,28 +134,25 @@ function UserRow({
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 flex items-center gap-3">
-      {/* Avatar */}
+    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 flex items-center gap-3">
       {user.avatar_url ? (
-        <img src={user.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
+        <img src={user.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 ring-1 ring-zinc-700" />
       ) : (
-        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-semibold shrink-0">
+        <div className="w-10 h-10 rounded-full bg-violet-500/15 text-violet-400 flex items-center justify-center text-sm font-semibold shrink-0">
           {initials}
         </div>
       )}
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 truncate">{user.name ?? '—'}</p>
-        <p className="text-xs text-gray-400 truncate">{user.email}</p>
-        <p className="text-xs text-gray-300 mt-0.5">Joined {joined}</p>
+        <p className="text-sm font-medium text-zinc-200 truncate">{user.name ?? '—'}</p>
+        <p className="text-xs text-zinc-500 truncate">{user.email}</p>
+        <p className="text-xs text-zinc-700 mt-0.5">Joined {joined}</p>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* Approved toggle */}
-        <label className="flex items-center gap-2 cursor-pointer select-none">
-          <span className="text-xs text-gray-500 hidden sm:block">
+        {/* Status toggle */}
+        <div className="flex items-center gap-2">
+          <span className={`text-xs hidden sm:block ${user.status === 'approved' ? 'text-emerald-400' : 'text-amber-400'}`}>
             {user.status === 'approved' ? 'Approved' : 'Pending'}
           </span>
           <button
@@ -171,17 +160,15 @@ function UserRow({
             aria-checked={user.status === 'approved'}
             onClick={onToggle}
             disabled={toggling}
-            className={`relative w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 ${
-              user.status === 'approved' ? 'bg-green-500' : 'bg-gray-200'
+            className={`relative w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-900 disabled:opacity-40 ${
+              user.status === 'approved' ? 'bg-emerald-500' : 'bg-zinc-700'
             }`}
           >
-            <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-                user.status === 'approved' ? 'translate-x-4' : 'translate-x-0'
-              }`}
-            />
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+              user.status === 'approved' ? 'translate-x-4' : 'translate-x-0'
+            }`} />
           </button>
-        </label>
+        </div>
 
         {/* Delete */}
         {confirming ? (
@@ -189,13 +176,13 @@ function UserRow({
             <button
               onClick={onDeleteConfirm}
               disabled={deleting}
-              className="px-2.5 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+              className="px-2.5 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg transition-colors disabled:opacity-50"
             >
               {deleting ? '…' : 'Yes'}
             </button>
             <button
               onClick={onDeleteCancel}
-              className="px-2.5 py-1 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-2.5 py-1 text-xs font-medium text-zinc-400 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
             >
               No
             </button>
@@ -203,7 +190,7 @@ function UserRow({
         ) : (
           <button
             onClick={onDeleteClick}
-            className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+            className="p-1.5 text-zinc-700 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
             title="Delete user"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
