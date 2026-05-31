@@ -1,5 +1,6 @@
 import type { Member } from '../types';
 import mtlLogo from '../assets/mtl.png';
+import Footer from './Footer';
 
 interface Props {
   user: Member;
@@ -56,6 +57,7 @@ export default function PendingPage({ user, onSignOut }: Props) {
           Sign out
         </button>
       </div>
+      <Footer />
     </div>
   );
 }

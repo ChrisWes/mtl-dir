@@ -42,14 +42,24 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
   const contact_email = typeof body.contact_email === 'string' ? body.contact_email.slice(0, 200) : null;
   const linkedin_url = typeof body.linkedin_url === 'string' ? body.linkedin_url.slice(0, 300) : null;
 
+  const linkedInPattern = /^https?:\/\/(www\.)?linkedin\.com\/in\//i;
+  if (linkedin_url && !linkedInPattern.test(linkedin_url)) {
+    return json({ error: 'Invalid LinkedIn URL — must start with linkedin.com/in/' }, 400);
+  }
+
+  const rawTags = Array.isArray(body.ask_me_about) ? body.ask_me_about : [];
+  const ask_me_about = JSON.stringify(
+    rawTags.filter((t): t is string => typeof t === 'string').map((s) => s.slice(0, 60)).slice(0, 20),
+  );
+
   await env.DB.prepare(
     `UPDATE members SET
       name = ?, bio = ?, location = ?, company = ?,
-      contact_email = ?, linkedin_url = ?,
+      contact_email = ?, linkedin_url = ?, ask_me_about = ?,
       updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, contact_email, linkedin_url, user.id)
+    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?').bind(user.id).first();

@@ -7,12 +7,14 @@ export interface Member {
   company: string | null;
   role: string | null;
   tech_stack: string[];
+  ask_me_about: string[];
   contact_email: string | null;
   linkedin_url: string | null;
   twitter_url: string | null;
   website_url: string | null;
   avatar_url: string | null;
   status: 'pending' | 'approved';
+  updated_at: string | null;
 }
 
 export interface AuthState {
@@ -45,6 +47,5 @@ export const ADMIN_EMAIL = 'chris.weston@gmail.com';
 
 export interface AdminUser extends Member {
   created_at: string;
-  updated_at: string;
 }
 

@@ -80,10 +80,31 @@ export default function MemberProfile({ member, onBack }: Props) {
             )}
           </div>
 
+          {/* Ask me about */}
+          {member.ask_me_about?.length > 0 && (
+            <div className="mt-5 pt-5 border-t border-zinc-800">
+              <p className="font-display text-xs font-bold text-violet-400 uppercase tracking-widest mb-2.5">Ask me about</p>
+              <div className="flex flex-wrap gap-2">
+                {member.ask_me_about.map((tag) => (
+                  <span key={tag} className="bg-zinc-800 text-zinc-300 text-xs rounded-lg px-2.5 py-1">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Bio */}
           {member.bio && (
-            <p className="mt-5 pt-5 border-t border-zinc-800 text-sm text-zinc-400 leading-relaxed">
+            <p className={`text-sm text-zinc-400 leading-relaxed ${member.ask_me_about?.length > 0 ? 'mt-4' : 'mt-5 pt-5 border-t border-zinc-800'}`}>
               {member.bio}
+            </p>
+          )}
+
+          {/* Last updated */}
+          {member.updated_at && (
+            <p className="mt-4 text-xs text-zinc-700">
+              Last updated {new Date(member.updated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
             </p>
           )}
         </div>

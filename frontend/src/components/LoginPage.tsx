@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import mtlLogo from '../assets/mtl.png';
+import Footer from './Footer';
 
 const GOOGLE_CLIENT_ID = '840076504590-v7tdndm1grlulv3sofeku0ns9m4rokeo.apps.googleusercontent.com';
 
@@ -76,6 +77,7 @@ export default function LoginPage({ onCredential }: Props) {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

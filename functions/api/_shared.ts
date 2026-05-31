@@ -12,6 +12,7 @@ export interface MemberRow {
   company: string | null;
   role: string | null;
   tech_stack: string;
+  ask_me_about: string;
   contact_email: string | null;
   linkedin_url: string | null;
   twitter_url: string | null;

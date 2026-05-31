@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Member } from '../types';
 
 interface Props {
@@ -8,28 +8,66 @@ interface Props {
   onClose: () => void;
 }
 
+const LINKEDIN_RE = /^https?:\/\/(www\.)?linkedin\.com\/in\//i;
+
 export default function EditProfile({ user, sessionToken, onSave, onClose }: Props) {
   const [form, setForm] = useState({
     name: user.name ?? '',
     bio: user.bio ?? '',
     location: user.location ?? '',
     company: user.company ?? '',
+    ask_me_about: user.ask_me_about ?? [],
     contact_email: user.contact_email ?? '',
     linkedin_url: user.linkedin_url ?? '',
   });
+  const [tagInput, setTagInput] = useState('');
   const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const tagRef = useRef<HTMLInputElement>(null);
+
+  const addTag = (raw: string) => {
+    const tag = raw.trim().replace(/,+$/, '').trim();
+    if (!tag || tag.length > 60) return;
+    if (form.ask_me_about.includes(tag)) return;
+    if (form.ask_me_about.length >= 20) return;
+    setForm((f) => ({ ...f, ask_me_about: [...f.ask_me_about, tag] }));
+    setTagInput('');
+  };
+
+  const removeTag = (tag: string) =>
+    setForm((f) => ({ ...f, ask_me_about: f.ask_me_about.filter((t) => t !== tag) }));
+
+  const handleTagKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(tagInput);
+    } else if (e.key === 'Backspace' && tagInput === '' && form.ask_me_about.length > 0) {
+      removeTag(form.ask_me_about[form.ask_me_about.length - 1]);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError('');
+
+    if (form.linkedin_url && !LINKEDIN_RE.test(form.linkedin_url)) {
+      setError('LinkedIn URL must start with linkedin.com/in/your-name');
+      setSaving(false);
+      return;
+    }
+
+    // Commit any in-progress tag text before submitting
+    const finalTags = tagInput.trim()
+      ? [...new Set([...form.ask_me_about, tagInput.trim().replace(/,+$/, '').trim()])]
+      : form.ask_me_about;
+
     try {
       const res = await fetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, ask_me_about: finalTags }),
       });
       const data = await res.json() as { user?: Member; error?: string };
       if (!res.ok || !data.user) throw new Error(data.error ?? 'Save failed');
@@ -80,12 +118,52 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             </Field>
           </div>
 
+          {/* Ask me about tags */}
+          <Field label="Ask me about">
+            <div
+              className="flex flex-wrap gap-2 min-h-[42px] p-2 bg-zinc-800 border border-zinc-700 rounded-xl cursor-text focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-500/20 transition-colors"
+              onClick={() => tagRef.current?.focus()}
+            >
+              {form.ask_me_about.map((tag) => (
+                <span key={tag} className="flex items-center gap-1 bg-zinc-700 text-zinc-200 text-xs rounded-lg pl-2.5 pr-1.5 py-1">
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeTag(tag); }}
+                    className="text-zinc-500 hover:text-zinc-200 transition-colors"
+                  >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+              <input
+                ref={tagRef}
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKey}
+                onBlur={() => addTag(tagInput)}
+                placeholder={form.ask_me_about.length === 0 ? 'e.g. AI strategy, team scaling… press Enter to add' : ''}
+                className="flex-1 min-w-[120px] bg-transparent text-xs text-zinc-200 placeholder-zinc-600 outline-none py-0.5"
+              />
+            </div>
+            <p className="text-xs text-zinc-600">Press Enter or comma to add a tag · max 20</p>
+          </Field>
+
           <Field label="Contact Email">
             <input className="dkinput" type="email" value={form.contact_email} onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))} placeholder="you@company.com" />
           </Field>
 
           <Field label="LinkedIn URL">
-            <input className="dkinput" type="url" value={form.linkedin_url} onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))} placeholder="https://linkedin.com/in/..." />
+            <input
+              className="dkinput"
+              type="url"
+              value={form.linkedin_url}
+              onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))}
+              placeholder="https://linkedin.com/in/your-name"
+            />
+            <p className="text-xs text-zinc-600">Must be a linkedin.com/in/ URL</p>
           </Field>
 
           {/* Data consent */}

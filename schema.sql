@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS members (
   company TEXT,
   role TEXT,
   tech_stack TEXT DEFAULT '[]',
+  ask_me_about TEXT DEFAULT '[]',
   contact_email TEXT,
   linkedin_url TEXT,
   twitter_url TEXT,

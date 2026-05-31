@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Member } from '../types';
 import { ADMIN_EMAIL } from '../types';
 import mtlLogo from '../assets/mtl.png';
+import Footer from './Footer';
 import MemberCard from './MemberCard';
 import MemberProfile from './MemberProfile';
 import EditProfile from './EditProfile';
@@ -163,6 +164,8 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
           ))}
         </div>
       </main>
+
+      <Footer />
 
       {showEdit && (
         <EditProfile
