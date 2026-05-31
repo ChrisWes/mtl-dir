@@ -39,7 +39,7 @@ export default function LoginPage({ onCredential }: Props) {
   }, [onCredential]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 flex flex-col relative overflow-hidden">
       {/* Ambient glows */}
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] bg-fuchsia-700/8 rounded-full blur-3xl pointer-events-none" />
@@ -52,29 +52,31 @@ export default function LoginPage({ onCredential }: Props) {
         }}
       />
 
-      <div className="relative w-full max-w-sm flex flex-col items-center gap-10">
-        {/* Brand */}
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="bg-white rounded-2xl px-7 py-4 shadow-2xl shadow-black/40">
-            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-16 w-auto" />
-          </div>
-          <p className="font-display text-sm tracking-wide text-violet-400/80 italic font-semibold">
-            Run by the community, for the community
-          </p>
-        </div>
-
-        {/* Sign-in card */}
-        <div className="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-2xl shadow-black/60 backdrop-blur-sm">
-          <div className="text-center">
-            <p className="font-display text-base font-bold text-zinc-200 tracking-wide">Member sign-in</p>
-            <p className="text-xs text-zinc-500 mt-1">Access is restricted to approved members</p>
+      <div className="relative flex-1 flex items-center justify-center px-4">
+        <div className="w-full max-w-sm flex flex-col items-center gap-10">
+          {/* Brand */}
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="bg-white rounded-2xl px-7 py-4 shadow-2xl shadow-black/40">
+              <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-16 w-auto" />
+            </div>
+            <p className="font-display text-sm tracking-wide text-violet-400/80 italic font-semibold">
+              Run by the community, for the community
+            </p>
           </div>
 
-          <div ref={btnRef} className="flex justify-center w-full min-h-[44px]" />
+          {/* Sign-in card */}
+          <div className="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-2xl shadow-black/60 backdrop-blur-sm">
+            <div className="text-center">
+              <p className="font-display text-base font-bold text-zinc-200 tracking-wide">Member sign-in</p>
+              <p className="text-xs text-zinc-500 mt-1">Access is restricted to approved members</p>
+            </div>
 
-          <p className="text-xs text-zinc-600 text-center leading-relaxed">
-            New account? You'll be reviewed by the admin before gaining access.
-          </p>
+            <div ref={btnRef} className="flex justify-center w-full min-h-[44px]" />
+
+            <p className="text-xs text-zinc-600 text-center leading-relaxed">
+              New account? You'll be reviewed by the admin before gaining access.
+            </p>
+          </div>
         </div>
       </div>
       <Footer />
