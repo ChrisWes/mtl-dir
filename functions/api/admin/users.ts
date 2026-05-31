@@ -1,8 +1,6 @@
-import { Env as BaseEnv, getSessionUser, json, parseTechStack } from '../_shared';
+import { Env, getSessionUser, json, parseTechStack } from '../_shared';
 
-interface Env extends BaseEnv {
-  ADMIN_EMAIL: string;
-}
+const ADMIN_EMAIL = 'chris.weston@gmail.com';
 
 interface AdminMemberRow {
   id: number;
@@ -25,7 +23,7 @@ interface AdminMemberRow {
 async function requireAdmin(request: Request, env: Env) {
   const user = await getSessionUser(request, env);
   if (!user) return { user: null, err: json({ error: 'Unauthorized' }, 401) };
-  if (user.email !== env.ADMIN_EMAIL) return { user: null, err: json({ error: 'Forbidden' }, 403) };
+  if (user.email !== ADMIN_EMAIL) return { user: null, err: json({ error: 'Forbidden' }, 403) };
   return { user, err: null };
 }
 
