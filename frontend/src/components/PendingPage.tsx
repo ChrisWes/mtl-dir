@@ -1,4 +1,5 @@
 import type { Member } from '../types';
+import mtlLogo from '../assets/mtl.png';
 
 interface Props {
   user: Member;
@@ -11,9 +12,9 @@ export default function PendingPage({ user, onSignOut }: Props) {
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-amber-600/8 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-8 flex flex-col items-center gap-6 text-center shadow-2xl shadow-black/60">
-        {/* MTL badge */}
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-black select-none">
-          MTL
+        {/* MTL logo */}
+        <div className="bg-white rounded-xl px-3 py-2">
+          <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-8 w-auto" />
         </div>
 
         {/* Lock icon */}

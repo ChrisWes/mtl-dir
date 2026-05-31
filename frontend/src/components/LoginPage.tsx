@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import mtlLogo from '../assets/mtl.png';
 
 const GOOGLE_CLIENT_ID = '840076504590-v7tdndm1grlulv3sofeku0ns9m4rokeo.apps.googleusercontent.com';
 
@@ -53,17 +54,12 @@ export default function LoginPage({ onCredential }: Props) {
       <div className="relative w-full max-w-sm flex flex-col items-center gap-10">
         {/* Brand */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shadow-2xl shadow-violet-500/30 select-none">
-            <span className="text-white text-2xl font-black tracking-tight">MTL</span>
+          <div className="bg-white rounded-3xl px-8 py-5 shadow-2xl shadow-black/40">
+            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-24 w-auto" />
           </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-300 via-fuchsia-300 to-violet-300 bg-clip-text text-transparent">
-              Midlands Tech Leaders
-            </h1>
-            <p className="text-sm text-violet-400/80 mt-2 italic font-medium">
-              Run by the community, for the community
-            </p>
-          </div>
+          <p className="text-sm text-violet-400/80 italic font-medium">
+            Run by the community, for the community
+          </p>
         </div>
 
         {/* Sign-in card */}

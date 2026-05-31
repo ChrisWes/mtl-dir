@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Member } from '../types';
 import { ADMIN_EMAIL } from '../types';
+import mtlLogo from '../assets/mtl.png';
 import MemberCard from './MemberCard';
 import MemberProfile from './MemberProfile';
 import EditProfile from './EditProfile';
@@ -53,10 +54,9 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
       {/* Header */}
       <header className="bg-zinc-950/90 border-b border-zinc-800/80 sticky top-0 z-40 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-xs font-black shrink-0 select-none shadow-sm shadow-violet-500/30">
-            MTL
+          <div className="bg-white rounded-lg px-2 py-1 shrink-0">
+            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-7 w-auto" />
           </div>
-          <span className="font-semibold text-zinc-100 text-sm hidden sm:block">Midlands Tech Leaders</span>
 
           {/* Nav tabs */}
           <div className="flex items-center gap-1 flex-1">
