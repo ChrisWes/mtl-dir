@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useCallback } from 'react';
 import type { AuthState, Member } from './types';
 import LoginPage from './components/LoginPage';
+import ConsentPage from './components/ConsentPage';
 import PendingPage from './components/PendingPage';
 import Directory from './components/Directory';
 
@@ -9,17 +10,25 @@ const SESSION_KEY = 'tld_session';
 type Action =
   | { type: 'SET_LOADING' }
   | { type: 'SET_AUTH'; user: Member; sessionToken: string }
+  | { type: 'CONSENT_GIVEN' }
   | { type: 'SET_IDLE' }
   | { type: 'UPDATE_USER'; user: Member };
+
+function resolvePhase(user: Member): AuthState['phase'] {
+  if (!user.consent_given) return 'consent';
+  return user.status;
+}
 
 function reducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, phase: 'loading' };
     case 'SET_AUTH':
-      return { phase: action.user.status, sessionToken: action.sessionToken, user: action.user };
+      return { phase: resolvePhase(action.user), sessionToken: action.sessionToken, user: action.user };
+    case 'CONSENT_GIVEN':
+      return { ...state, phase: state.user!.status };
     case 'UPDATE_USER':
-      return { ...state, user: action.user, phase: action.user.status };
+      return { ...state, user: action.user, phase: resolvePhase(action.user) };
     case 'SET_IDLE':
       return { phase: 'idle', sessionToken: null, user: null };
   }
@@ -86,8 +95,17 @@ export default function App() {
     );
   }
 
-  if (state.phase === 'idle') {
-    return <LoginPage onCredential={handleSignIn} />;
+  if (state.phase === 'idle') return <LoginPage onCredential={handleSignIn} />;
+
+  if (state.phase === 'consent') {
+    return (
+      <ConsentPage
+        user={state.user!}
+        sessionToken={state.sessionToken!}
+        onConsent={() => dispatch({ type: 'CONSENT_GIVEN' })}
+        onSignOut={handleSignOut}
+      />
+    );
   }
 
   if (state.phase === 'pending') {

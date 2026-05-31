@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS members (
   twitter_url TEXT,
   website_url TEXT,
   avatar_url TEXT,
+  consent_given INTEGER NOT NULL DEFAULT 0,
   status TEXT NOT NULL DEFAULT 'pending',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

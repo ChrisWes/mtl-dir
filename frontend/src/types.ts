@@ -13,12 +13,13 @@ export interface Member {
   twitter_url: string | null;
   website_url: string | null;
   avatar_url: string | null;
+  consent_given: boolean;
   status: 'pending' | 'approved';
   updated_at: string | null;
 }
 
 export interface AuthState {
-  phase: 'idle' | 'loading' | 'pending' | 'approved';
+  phase: 'idle' | 'loading' | 'consent' | 'pending' | 'approved';
   sessionToken: string | null;
   user: Member | null;
 }

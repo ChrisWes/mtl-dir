@@ -18,6 +18,7 @@ export interface MemberRow {
   twitter_url: string | null;
   website_url: string | null;
   avatar_url: string | null;
+  consent_given: number;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;

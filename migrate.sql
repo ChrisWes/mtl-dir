@@ -1,1 +1,2 @@
 ALTER TABLE members ADD COLUMN ask_me_about TEXT DEFAULT '[]';
+ALTER TABLE members ADD COLUMN consent_given INTEGER NOT NULL DEFAULT 0;
