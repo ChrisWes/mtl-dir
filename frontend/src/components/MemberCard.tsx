@@ -28,9 +28,6 @@ export default function MemberCard({ member, onClick }: Props) {
         )}
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-gray-900 truncate">{member.name ?? member.email}</p>
-          {member.role && (
-            <p className="text-sm text-gray-500 truncate">{member.role}</p>
-          )}
           {member.company && (
             <p className="text-sm text-blue-600 truncate">{member.company}</p>
           )}

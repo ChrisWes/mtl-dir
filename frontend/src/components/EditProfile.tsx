@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { Member } from '../types';
-import { ROLE_OPTIONS } from '../types';
 
 interface Props {
   user: Member;
@@ -15,10 +14,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     bio: user.bio ?? '',
     location: user.location ?? '',
     company: user.company ?? '',
-    role: user.role ?? '',
     linkedin_url: user.linkedin_url ?? '',
-    twitter_url: user.twitter_url ?? '',
-    website_url: user.website_url ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -89,23 +85,8 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             </Field>
           </div>
 
-          <Field label="Role">
-            <select className="input" value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}>
-              <option value="">Select a role</option>
-              {ROLE_OPTIONS.map((r) => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </Field>
-
           <Field label="LinkedIn URL">
             <input className="input" type="url" value={form.linkedin_url} onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))} placeholder="https://linkedin.com/in/..." />
-          </Field>
-          <Field label="Twitter / X URL">
-            <input className="input" type="url" value={form.twitter_url} onChange={(e) => setForm((f) => ({ ...f, twitter_url: e.target.value }))} placeholder="https://x.com/..." />
-          </Field>
-          <Field label="Website">
-            <input className="input" type="url" value={form.website_url} onChange={(e) => setForm((f) => ({ ...f, website_url: e.target.value }))} placeholder="https://..." />
           </Field>
 
           {error && (

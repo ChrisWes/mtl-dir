@@ -47,8 +47,3 @@ export interface AdminUser extends Member {
   updated_at: string;
 }
 
-export const ROLE_OPTIONS = [
-  'CTO', 'VP Engineering', 'Director of Engineering', 'Engineering Manager',
-  'Staff Engineer', 'Principal Engineer', 'Senior Engineer', 'Architect',
-  'Founder', 'Co-Founder', 'Other',
-] as const;
