@@ -1,3 +1,8 @@
 name = "tech-leaders-directory"
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "frontend/dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tech-leaders-db"
+database_id = "dea1957f-bae2-4ca8-be5c-1dcbf4e7633e"
