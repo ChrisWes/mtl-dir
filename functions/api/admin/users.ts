@@ -33,7 +33,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   if (err) return err;
 
   const { results } = await env.DB.prepare(
-    `SELECT * FROM members ORDER BY created_at DESC`,
+    `SELECT * FROM members WHERE consent_given = 1 ORDER BY created_at DESC`,
   ).all<AdminMemberRow>();
 
   const users = (results ?? []).map((u) => ({
