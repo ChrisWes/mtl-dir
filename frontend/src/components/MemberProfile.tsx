@@ -24,21 +24,13 @@ export default function MemberProfile({ member, onBack }: Props) {
 
       {/* Profile card */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl shadow-black/40">
-        {/* Header band */}
-        <div className="h-20 bg-gradient-to-r from-violet-950/80 via-fuchsia-950/40 to-zinc-900 relative">
-          <div className="absolute inset-0 opacity-30" style={{
-            backgroundImage: 'linear-gradient(to right,#8b5cf610 1px,transparent 1px),linear-gradient(to bottom,#8b5cf610 1px,transparent 1px)',
-            backgroundSize: '20px 20px',
-          }} />
-        </div>
-
-        <div className="px-6 pb-6">
+        <div className="px-6 pt-6 pb-6">
           {/* Avatar */}
-          <div className="-mt-10 mb-5">
+          <div className="mb-5">
             {member.avatar_url ? (
-              <img src={member.avatar_url} alt="" className="w-20 h-20 rounded-2xl object-cover ring-4 ring-zinc-900 shadow-lg" />
+              <img src={member.avatar_url} alt="" className="w-20 h-20 rounded-2xl object-cover ring-2 ring-zinc-700 shadow-lg" />
             ) : (
-              <div className="w-20 h-20 rounded-2xl bg-violet-500/20 text-violet-400 flex items-center justify-center text-2xl font-bold ring-4 ring-zinc-900 shadow-lg">
+              <div className="w-20 h-20 rounded-2xl bg-violet-500/20 text-violet-400 flex items-center justify-center text-2xl font-bold ring-2 ring-zinc-700 shadow-lg">
                 {initials}
               </div>
             )}
