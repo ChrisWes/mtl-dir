@@ -10,7 +10,33 @@ interface Props {
 
 const LINKEDIN_RE = /^https?:\/\/(www\.)?linkedin\.com\/in\//i;
 
+function resizeToSquare(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const size = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d')!;
+      // Centre-crop to square
+      const shorter = Math.min(img.naturalWidth, img.naturalHeight);
+      const sx = (img.naturalWidth - shorter) / 2;
+      const sy = (img.naturalHeight - shorter) / 2;
+      ctx.drawImage(img, sx, sy, shorter, shorter, 0, 0, size, size);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Could not load image')); };
+    img.src = objectUrl;
+  });
+}
+
 export default function EditProfile({ user, sessionToken, onSave, onClose }: Props) {
+  const initials = (user.name ?? user.email)
+    .split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
   const [form, setForm] = useState({
     name: user.name ?? '',
     bio: user.bio ?? '',
@@ -19,11 +45,14 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     ask_me_about: user.ask_me_about ?? [],
     contact_email: user.contact_email ?? '',
     linkedin_url: user.linkedin_url ?? '',
+    avatar_url: user.avatar_url ?? null as string | null,
   });
   const [tagInput, setTagInput] = useState('');
+  const [avatarProcessing, setAvatarProcessing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const tagRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const addTag = (raw: string) => {
     const tag = raw.trim().replace(/,+$/, '').trim();
@@ -46,6 +75,27 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     }
   };
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file');
+      return;
+    }
+    setAvatarProcessing(true);
+    setError('');
+    try {
+      const dataUrl = await resizeToSquare(file);
+      setForm((f) => ({ ...f, avatar_url: dataUrl }));
+    } catch {
+      setError('Could not process the image — please try another file');
+    } finally {
+      setAvatarProcessing(false);
+      // Reset input so the same file can be re-selected if needed
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -57,7 +107,6 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
       return;
     }
 
-    // Commit any in-progress tag text before submitting
     const finalTags = tagInput.trim()
       ? [...new Set([...form.ask_me_about, tagInput.trim().replace(/,+$/, '').trim()])]
       : form.ask_me_about;
@@ -92,6 +141,47 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
         </div>
 
         <form id="edit-profile-form" onSubmit={handleSubmit} className="overflow-y-auto flex-1 px-5 py-5 flex flex-col gap-4">
+
+          {/* Avatar upload */}
+          <div className="flex flex-col items-center gap-2 pb-2">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={avatarProcessing}
+              className="relative group focus:outline-none"
+              aria-label="Change profile photo"
+            >
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-zinc-700 group-hover:ring-violet-500 transition-colors">
+                {avatarProcessing ? (
+                  <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : form.avatar_url ? (
+                  <img src={form.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xl font-bold">
+                    {initials}
+                  </div>
+                )}
+              </div>
+              {/* Hover overlay */}
+              <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity pointer-events-none">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                </svg>
+              </div>
+            </button>
+            <p className="text-xs text-zinc-600">Click to change photo</p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="sr-only"
+            />
+          </div>
+
           <Field label="Name">
             <input className="dkinput" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Your full name" />
           </Field>
@@ -177,7 +267,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
           <button
             type="submit"
             form="edit-profile-form"
-            disabled={saving || !form.name.trim()}
+            disabled={saving || avatarProcessing || !form.name.trim()}
             className="flex-1 py-2.5 text-sm font-medium text-white bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-xl transition-colors"
           >
             {saving ? 'Saving…' : 'Save changes'}

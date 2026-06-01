@@ -50,14 +50,31 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
     rawTags.filter((t): t is string => typeof t === 'string').slice(0, 20).map((s) => s.slice(0, 60)),
   );
 
+  // avatar_url: accept base64 data URLs or existing https:// URLs; reject anything else
+  let avatar_url: string | null = user.avatar_url; // default: keep existing
+  if (Object.prototype.hasOwnProperty.call(body, 'avatar_url')) {
+    const raw = body.avatar_url;
+    if (raw === null || raw === '') {
+      avatar_url = null;
+    } else if (typeof raw === 'string') {
+      if (!raw.startsWith('data:image/') && !raw.startsWith('https://')) {
+        return json({ error: 'Invalid avatar URL' }, 400);
+      }
+      if (raw.length > 250_000) {
+        return json({ error: 'Avatar image too large — please use a smaller photo' }, 400);
+      }
+      avatar_url = raw;
+    }
+  }
+
   await env.DB.prepare(
     `UPDATE members SET
       name = ?, bio = ?, location = ?, company = ?,
       contact_email = ?, linkedin_url = ?, ask_me_about = ?,
-      updated_at = CURRENT_TIMESTAMP
+      avatar_url = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, user.id)
+    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, avatar_url, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?')
