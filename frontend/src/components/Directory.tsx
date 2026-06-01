@@ -55,9 +55,7 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
       {/* Header */}
       <header className="bg-zinc-950/90 border-b border-zinc-800/80 sticky top-0 z-40 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="bg-white rounded-lg px-2 py-1 shrink-0">
-            <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-7 w-auto" />
-          </div>
+          <img src={mtlLogo} alt="Midlands Tech Leaders" className="w-9 h-9 shrink-0" />
 
           {/* Nav tabs */}
           <div className="flex items-center gap-1 flex-1">

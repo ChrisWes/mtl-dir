@@ -15,9 +15,7 @@ export default function PendingPage({ user, onSignOut }: Props) {
       <div className="relative flex-1 flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-8 flex flex-col items-center gap-6 text-center shadow-2xl shadow-black/60">
         {/* MTL logo */}
-        <div className="bg-white rounded-xl px-3 py-2">
-          <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-8 w-auto" />
-        </div>
+        <img src={mtlLogo} alt="Midlands Tech Leaders" className="w-16 h-16" />
 
         {/* Lock icon */}
         <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">

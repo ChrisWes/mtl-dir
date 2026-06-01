@@ -56,9 +56,7 @@ export default function LoginPage({ onCredential }: Props) {
         <div className="w-full max-w-sm flex flex-col items-center gap-10">
           {/* Brand */}
           <div className="flex flex-col items-center gap-4 text-center">
-            <div className="bg-white rounded-2xl px-7 py-4 shadow-2xl shadow-black/40">
-              <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-16 w-auto" />
-            </div>
+            <img src={mtlLogo} alt="Midlands Tech Leaders" className="w-32 h-32 drop-shadow-2xl" />
             <p className="font-display text-sm tracking-wide text-violet-400/80 italic font-semibold">
               Run by the community, for the community
             </p>

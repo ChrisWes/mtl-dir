@@ -40,9 +40,7 @@ export default function ConsentPage({ user, sessionToken, onConsent, onSignOut }
         <div className="w-full max-w-md flex flex-col gap-6">
           {/* Logo */}
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl px-6 py-3 shadow-xl shadow-black/40">
-              <img src={mtlLogo} alt="Midlands Tech Leaders" className="h-12 w-auto" />
-            </div>
+            <img src={mtlLogo} alt="Midlands Tech Leaders" className="w-20 h-20 drop-shadow-xl" />
           </div>
 
           {/* Card */}
