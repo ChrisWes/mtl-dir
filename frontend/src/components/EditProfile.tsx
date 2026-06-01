@@ -21,7 +21,6 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     linkedin_url: user.linkedin_url ?? '',
   });
   const [tagInput, setTagInput] = useState('');
-  const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const tagRef = useRef<HTMLInputElement>(null);
@@ -166,29 +165,6 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             <p className="text-xs text-zinc-600">Must be a linkedin.com/in/ URL</p>
           </Field>
 
-          {/* Data consent */}
-          <div className="rounded-xl border border-zinc-700/60 bg-zinc-800/40 p-4 flex flex-col gap-3">
-            <p className="font-display text-xs font-bold text-violet-400 uppercase tracking-widest">Data Privacy Notice</p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              By checking this box, you consent to Midlands Tech Leaders holding your data securely in our private directory.
-              Your information will only be visible to other approved members of this group for networking and professional
-              collaboration. We will never sell, share, or use your data for external marketing. You can edit your details
-              or request complete deletion at any time by messaging the group admin.
-            </p>
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                required
-                checked={consent}
-                onChange={(e) => setConsent(e.target.checked)}
-                className="mt-0.5 shrink-0 w-4 h-4 rounded border-zinc-600 bg-zinc-700 accent-violet-500 cursor-pointer"
-              />
-              <span className="text-xs text-zinc-300 leading-relaxed group-has-[:checked]:text-zinc-200 transition-colors">
-                I consent to my data being shared with approved group members as outlined above.
-              </span>
-            </label>
-          </div>
-
           {error && (
             <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">{error}</p>
           )}
@@ -201,7 +177,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
           <button
             type="submit"
             form="edit-profile-form"
-            disabled={saving}
+            disabled={saving || !form.name.trim()}
             className="flex-1 py-2.5 text-sm font-medium text-white bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-xl transition-colors"
           >
             {saving ? 'Saving…' : 'Save changes'}

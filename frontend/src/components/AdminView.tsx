@@ -12,6 +12,7 @@ export default function AdminView({ sessionToken }: Props) {
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [actionError, setActionError] = useState('');
 
   const headers = { Authorization: `Bearer ${sessionToken}`, 'Content-Type': 'application/json' };
 
@@ -35,14 +36,19 @@ export default function AdminView({ sessionToken }: Props) {
   const toggleStatus = async (user: AdminUser) => {
     const next = user.status === 'approved' ? 'pending' : 'approved';
     setTogglingId(user.id);
+    setActionError('');
     setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: next } : u));
     try {
       const res = await fetch('/api/admin/users', {
         method: 'PATCH', headers, body: JSON.stringify({ id: user.id, status: next }),
       });
-      if (!res.ok) setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
+      if (!res.ok) {
+        setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
+        setActionError('Failed to update status — please try again.');
+      }
     } catch {
       setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, status: user.status } : u));
+      setActionError('Network error — please try again.');
     } finally {
       setTogglingId(null);
     }
@@ -50,9 +56,16 @@ export default function AdminView({ sessionToken }: Props) {
 
   const deleteUser = async (id: number) => {
     setDeletingId(id);
+    setActionError('');
     try {
       const res = await fetch(`/api/admin/users?id=${id}`, { method: 'DELETE', headers });
-      if (res.ok) setUsers((prev) => prev.filter((u) => u.id !== id));
+      if (res.ok) {
+        setUsers((prev) => prev.filter((u) => u.id !== id));
+      } else {
+        setActionError('Failed to delete user — please try again.');
+      }
+    } catch {
+      setActionError('Network error — please try again.');
     } finally {
       setDeletingId(null);
       setConfirmDelete(null);
@@ -73,6 +86,12 @@ export default function AdminView({ sessionToken }: Props) {
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400">{error}</div>
+      )}
+      {actionError && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400 flex items-center justify-between gap-3">
+          {actionError}
+          <button onClick={() => setActionError('')} className="text-red-400/60 hover:text-red-400 shrink-0">✕</button>
+        </div>
       )}
 
       {loading ? (

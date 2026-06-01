@@ -59,6 +59,14 @@ export default function App() {
   }, []);
 
   const handleSignOut = useCallback(() => {
+    const token = localStorage.getItem(SESSION_KEY);
+    if (token) {
+      // Best-effort — don't block the UI on the response
+      fetch('/api/session', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
     localStorage.removeItem(SESSION_KEY);
     window.google?.accounts.id.disableAutoSelect();
     dispatch({ type: 'SET_IDLE' });

@@ -11,10 +11,11 @@ interface AdminMemberRow {
   company: string | null;
   role: string | null;
   tech_stack: string;
+  ask_me_about: string;
+  contact_email: string | null;
   linkedin_url: string | null;
-  twitter_url: string | null;
-  website_url: string | null;
   avatar_url: string | null;
+  consent_given: number;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;
@@ -76,8 +77,11 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
   const { err } = await requireAdmin(request, env);
   if (err) return err;
 
-  const id = new URL(request.url).searchParams.get('id');
-  if (!id) return json({ error: 'Missing id' }, 400);
+  const raw = new URL(request.url).searchParams.get('id');
+  const id = Number(raw);
+  if (!raw || !Number.isInteger(id) || id <= 0) {
+    return json({ error: 'Invalid id' }, 400);
+  }
 
   await env.DB.prepare(`DELETE FROM members WHERE id = ?`).bind(id).run();
 
