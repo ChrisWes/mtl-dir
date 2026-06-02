@@ -19,6 +19,7 @@ export interface MemberRow {
   website_url: string | null;
   avatar_url: string | null;
   consent_given: number;
+  high_contrast: number;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;

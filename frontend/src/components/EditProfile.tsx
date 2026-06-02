@@ -50,6 +50,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     contact_email: user.contact_email ?? '',
     linkedin_handle: extractLinkedInHandle(user.linkedin_url),
     avatar_url: user.avatar_url ?? null as string | null,
+    high_contrast: !!user.high_contrast,
   });
   const [tagInput, setTagInput] = useState('');
   const [avatarProcessing, setAvatarProcessing] = useState(false);
@@ -77,6 +78,25 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     } else if (e.key === 'Backspace' && tagInput === '' && form.ask_me_about.length > 0) {
       removeTag(form.ask_me_about[form.ask_me_about.length - 1]);
     }
+  };
+
+  const handleHCToggle = (checked: boolean) => {
+    setForm((f) => ({ ...f, high_contrast: checked }));
+    if (checked) {
+      document.documentElement.classList.add('hc');
+    } else {
+      document.documentElement.classList.remove('hc');
+    }
+  };
+
+  const handleClose = () => {
+    // Revert live HC preview to the saved state
+    if (user.high_contrast) {
+      document.documentElement.classList.add('hc');
+    } else {
+      document.documentElement.classList.remove('hc');
+    }
+    onClose();
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +154,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0">
           <h2 className="font-display text-base font-bold text-zinc-100 tracking-wide">Edit Profile</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors">
+          <button onClick={handleClose} className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -259,13 +279,34 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             </div>
           </Field>
 
+          {/* Display preference */}
+          <div className="flex items-center justify-between rounded-xl border border-zinc-700/60 bg-zinc-800/40 px-4 py-3">
+            <div>
+              <p className="text-sm font-medium text-zinc-200">High contrast</p>
+              <p className="text-xs text-zinc-500 mt-0.5">Increases text and border visibility</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={form.high_contrast}
+              onClick={() => handleHCToggle(!form.high_contrast)}
+              className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-900 shrink-0 ${
+                form.high_contrast ? 'bg-violet-600' : 'bg-zinc-700'
+              }`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                form.high_contrast ? 'translate-x-5' : 'translate-x-0'
+              }`} />
+            </button>
+          </div>
+
           {error && (
             <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">{error}</p>
           )}
         </form>
 
         <div className="px-5 py-4 border-t border-zinc-800 shrink-0 flex gap-3">
-          <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm font-medium text-zinc-400 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors">
+          <button type="button" onClick={handleClose} className="flex-1 py-2.5 text-sm font-medium text-zinc-400 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors">
             Cancel
           </button>
           <button

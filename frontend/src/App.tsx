@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useCallback, useState } from 'react';
+import { useEffect, useReducer, useCallback } from 'react';
 import type { AuthState, Member } from './types';
 import LoginPage from './components/LoginPage';
 import ConsentPage from './components/ConsentPage';
@@ -6,7 +6,6 @@ import PendingPage from './components/PendingPage';
 import Directory from './components/Directory';
 
 const SESSION_KEY = 'tld_session';
-const HC_KEY = 'mtl_hc';
 
 type Action =
   | { type: 'SET_LOADING' }
@@ -42,18 +41,14 @@ export default function App() {
     user: null,
   });
 
-  const [highContrast, setHighContrast] = useState(() => localStorage.getItem(HC_KEY) === '1');
-
+  // Apply high-contrast class whenever the user preference changes
   useEffect(() => {
-    if (highContrast) {
+    if (state.user?.high_contrast) {
       document.documentElement.classList.add('hc');
     } else {
       document.documentElement.classList.remove('hc');
     }
-    localStorage.setItem(HC_KEY, highContrast ? '1' : '0');
-  }, [highContrast]);
-
-  const toggleHighContrast = useCallback(() => setHighContrast((v) => !v), []);
+  }, [state.user?.high_contrast]);
 
   const handleSignIn = useCallback(async (credential: string) => {
     dispatch({ type: 'SET_LOADING' });
@@ -137,8 +132,6 @@ export default function App() {
       currentUser={state.user!}
       onUserUpdate={(user) => dispatch({ type: 'UPDATE_USER', user })}
       onSignOut={handleSignOut}
-      highContrast={highContrast}
-      onToggleHighContrast={toggleHighContrast}
     />
   );
 }

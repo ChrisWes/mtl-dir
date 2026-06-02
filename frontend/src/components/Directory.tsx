@@ -13,11 +13,9 @@ interface Props {
   currentUser: Member;
   onUserUpdate: (user: Member) => void;
   onSignOut: () => void;
-  highContrast: boolean;
-  onToggleHighContrast: () => void;
 }
 
-export default function Directory({ sessionToken, currentUser, onUserUpdate, onSignOut, highContrast, onToggleHighContrast }: Props) {
+export default function Directory({ sessionToken, currentUser, onUserUpdate, onSignOut }: Props) {
   const isAdmin = currentUser.email === ADMIN_EMAIL;
   const [view, setView] = useState<'members' | 'admin' | 'profile'>('members');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -97,16 +95,6 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
               </div>
             )}
             <span className="hidden sm:block max-w-[120px] truncate">{currentUser.name ?? 'Profile'}</span>
-          </button>
-
-          <button
-            onClick={onToggleHighContrast}
-            className={`p-1.5 rounded-lg transition-colors ${highContrast ? 'text-violet-400 bg-violet-500/10' : 'text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800'}`}
-            title={highContrast ? 'High contrast on' : 'High contrast off'}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-            </svg>
           </button>
 
           <button

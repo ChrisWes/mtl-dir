@@ -45,6 +45,8 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
     return json({ error: 'Invalid LinkedIn URL — must start with linkedin.com/in/' }, 400);
   }
 
+  const high_contrast = body.high_contrast === true ? 1 : 0;
+
   const rawTags = Array.isArray(body.ask_me_about) ? body.ask_me_about : [];
   const ask_me_about = JSON.stringify(
     rawTags.filter((t): t is string => typeof t === 'string').slice(0, 20).map((s) => s.slice(0, 60)),
@@ -71,10 +73,10 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
     `UPDATE members SET
       name = ?, bio = ?, location = ?, company = ?,
       contact_email = ?, linkedin_url = ?, ask_me_about = ?,
-      avatar_url = ?, updated_at = CURRENT_TIMESTAMP
+      avatar_url = ?, high_contrast = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, avatar_url, user.id)
+    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, avatar_url, high_contrast, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?')
