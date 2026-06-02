@@ -9,6 +9,7 @@ export interface Member {
   tech_stack: string[];
   ask_me_about: string[];
   contact_email: string | null;
+  secondary_email: string | null;
   linkedin_url: string | null;
   twitter_url: string | null;
   website_url: string | null;

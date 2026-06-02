@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS members (
   tech_stack TEXT DEFAULT '[]',
   ask_me_about TEXT DEFAULT '[]',
   contact_email TEXT,
+  secondary_email TEXT,
   linkedin_url TEXT,
   twitter_url TEXT,
   website_url TEXT,

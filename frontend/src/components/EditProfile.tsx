@@ -48,6 +48,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     company: user.company ?? '',
     ask_me_about: user.ask_me_about ?? [],
     contact_email: user.contact_email ?? '',
+    secondary_email: user.secondary_email ?? '',
     linkedin_handle: extractLinkedInHandle(user.linkedin_url),
     avatar_url: user.avatar_url ?? null as string | null,
     high_contrast: !!user.high_contrast,
@@ -263,6 +264,10 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
 
           <Field label="Contact Email">
             <input className="dkinput" type="email" value={form.contact_email} onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))} placeholder="you@company.com" />
+          </Field>
+
+          <Field label="Secondary Email">
+            <input className="dkinput" type="email" value={form.secondary_email} onChange={(e) => setForm((f) => ({ ...f, secondary_email: e.target.value }))} placeholder="you@personal.com" />
           </Field>
 
           <Field label="LinkedIn">

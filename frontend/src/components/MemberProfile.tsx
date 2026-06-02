@@ -48,12 +48,15 @@ export default function MemberProfile({ member, onBack }: Props) {
               <Fact icon={<PinIcon />} value={member.location} />
             )}
             {member.contact_email && (
-              <a
-                href={`mailto:${member.contact_email}`}
-                className="flex items-center gap-3 group"
-              >
+              <a href={`mailto:${member.contact_email}`} className="flex items-center gap-3 group">
                 <span className="text-zinc-600 group-hover:text-violet-400 transition-colors shrink-0"><MailIcon /></span>
                 <span className="text-sm text-zinc-400 group-hover:text-violet-300 transition-colors">{member.contact_email}</span>
+              </a>
+            )}
+            {member.secondary_email && (
+              <a href={`mailto:${member.secondary_email}`} className="flex items-center gap-3 group">
+                <span className="text-zinc-600 group-hover:text-violet-400 transition-colors shrink-0"><MailIcon /></span>
+                <span className="text-sm text-zinc-400 group-hover:text-violet-300 transition-colors">{member.secondary_email}</span>
               </a>
             )}
             {member.linkedin_url && (

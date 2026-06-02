@@ -41,6 +41,12 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
   }
   const contact_email = contact_email_raw || null;
 
+  const secondary_email_raw = typeof body.secondary_email === 'string' ? body.secondary_email.trim().slice(0, 200) : null;
+  if (secondary_email_raw && !EMAIL_RE.test(secondary_email_raw)) {
+    return json({ error: 'Invalid secondary email address' }, 400);
+  }
+  const secondary_email = secondary_email_raw || null;
+
   if (linkedin_url && !LINKEDIN_RE.test(linkedin_url)) {
     return json({ error: 'Invalid LinkedIn URL — must start with linkedin.com/in/' }, 400);
   }
@@ -72,11 +78,11 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
   await env.DB.prepare(
     `UPDATE members SET
       name = ?, bio = ?, location = ?, company = ?,
-      contact_email = ?, linkedin_url = ?, ask_me_about = ?,
+      contact_email = ?, secondary_email = ?, linkedin_url = ?, ask_me_about = ?,
       avatar_url = ?, high_contrast = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, contact_email, linkedin_url, ask_me_about, avatar_url, high_contrast, user.id)
+    .bind(name, bio, location, company, contact_email, secondary_email, linkedin_url, ask_me_about, avatar_url, high_contrast, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?')

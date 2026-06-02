@@ -1,1 +1,1 @@
-ALTER TABLE members ADD COLUMN high_contrast INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE members ADD COLUMN secondary_email TEXT;
