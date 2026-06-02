@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useCallback } from 'react';
+import { useEffect, useReducer, useCallback, useState } from 'react';
 import type { AuthState, Member } from './types';
 import LoginPage from './components/LoginPage';
 import ConsentPage from './components/ConsentPage';
@@ -6,6 +6,7 @@ import PendingPage from './components/PendingPage';
 import Directory from './components/Directory';
 
 const SESSION_KEY = 'tld_session';
+const HC_KEY = 'mtl_hc';
 
 type Action =
   | { type: 'SET_LOADING' }
@@ -41,6 +42,19 @@ export default function App() {
     user: null,
   });
 
+  const [highContrast, setHighContrast] = useState(() => localStorage.getItem(HC_KEY) === '1');
+
+  useEffect(() => {
+    if (highContrast) {
+      document.documentElement.classList.add('hc');
+    } else {
+      document.documentElement.classList.remove('hc');
+    }
+    localStorage.setItem(HC_KEY, highContrast ? '1' : '0');
+  }, [highContrast]);
+
+  const toggleHighContrast = useCallback(() => setHighContrast((v) => !v), []);
+
   const handleSignIn = useCallback(async (credential: string) => {
     dispatch({ type: 'SET_LOADING' });
     try {
@@ -61,7 +75,6 @@ export default function App() {
   const handleSignOut = useCallback(() => {
     const token = localStorage.getItem(SESSION_KEY);
     if (token) {
-      // Best-effort — don't block the UI on the response
       fetch('/api/session', {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -77,9 +90,7 @@ export default function App() {
     const token = localStorage.getItem(SESSION_KEY);
     if (!token) return;
     dispatch({ type: 'SET_LOADING' });
-    fetch('/api/profile', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    fetch('/api/profile', { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
       .then((data: { user?: Member }) => {
         if (data.user) {
@@ -126,6 +137,8 @@ export default function App() {
       currentUser={state.user!}
       onUserUpdate={(user) => dispatch({ type: 'UPDATE_USER', user })}
       onSignOut={handleSignOut}
+      highContrast={highContrast}
+      onToggleHighContrast={toggleHighContrast}
     />
   );
 }

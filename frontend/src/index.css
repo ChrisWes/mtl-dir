@@ -9,3 +9,23 @@ body {
   background-color: #09090b;
   font-family: var(--font-sans);
 }
+
+/* Raise baseline readability for muted text on dark backgrounds */
+:root {
+  --color-zinc-500: oklch(63% 0.012 286);
+  --color-zinc-600: oklch(54% 0.012 286);
+}
+
+/* High-contrast mode — applied via html.hc class */
+html.hc {
+  --color-zinc-100: oklch(97% 0.004 286);
+  --color-zinc-200: oklch(94% 0.006 286);
+  --color-zinc-300: oklch(90% 0.006 286);
+  --color-zinc-400: oklch(86% 0.008 286);
+  --color-zinc-500: oklch(78% 0.008 286);
+  --color-zinc-600: oklch(68% 0.008 286);
+  --color-zinc-700: oklch(56% 0.008 286);
+  --color-zinc-800: oklch(22% 0.008 286);
+  --color-zinc-900: oklch(11% 0.008 286);
+  --color-zinc-950: oklch(4% 0.008 286);
+}

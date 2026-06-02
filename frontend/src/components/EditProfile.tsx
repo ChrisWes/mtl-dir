@@ -8,7 +8,11 @@ interface Props {
   onClose: () => void;
 }
 
-const LINKEDIN_RE = /^https?:\/\/(www\.)?linkedin\.com\/in\//i;
+const extractLinkedInHandle = (url: string | null): string => {
+  if (!url) return '';
+  const m = url.match(/linkedin\.com\/in\/([^/?#\s]+)/i);
+  return m ? m[1].replace(/\/$/, '') : '';
+};
 
 function resizeToSquare(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -44,7 +48,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     company: user.company ?? '',
     ask_me_about: user.ask_me_about ?? [],
     contact_email: user.contact_email ?? '',
-    linkedin_url: user.linkedin_url ?? '',
+    linkedin_handle: extractLinkedInHandle(user.linkedin_url),
     avatar_url: user.avatar_url ?? null as string | null,
   });
   const [tagInput, setTagInput] = useState('');
@@ -101,21 +105,18 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     setSaving(true);
     setError('');
 
-    if (form.linkedin_url && !LINKEDIN_RE.test(form.linkedin_url)) {
-      setError('LinkedIn URL must start with linkedin.com/in/your-name');
-      setSaving(false);
-      return;
-    }
-
     const finalTags = tagInput.trim()
       ? [...new Set([...form.ask_me_about, tagInput.trim().replace(/,+$/, '').trim()])]
       : form.ask_me_about;
+
+    const handle = form.linkedin_handle.trim().replace(/^\/+|\/+$/g, '');
+    const linkedin_url = handle ? `https://linkedin.com/in/${handle}` : null;
 
     try {
       const res = await fetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` },
-        body: JSON.stringify({ ...form, ask_me_about: finalTags }),
+        body: JSON.stringify({ ...form, linkedin_url, ask_me_about: finalTags }),
       });
       const data = await res.json() as { user?: Member; error?: string };
       if (!res.ok || !data.user) throw new Error(data.error ?? 'Save failed');
@@ -244,15 +245,18 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             <input className="dkinput" type="email" value={form.contact_email} onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))} placeholder="you@company.com" />
           </Field>
 
-          <Field label="LinkedIn URL">
-            <input
-              className="dkinput"
-              type="url"
-              value={form.linkedin_url}
-              onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))}
-              placeholder="https://linkedin.com/in/your-name"
-            />
-            <p className="text-xs text-zinc-600">Must be a linkedin.com/in/ URL</p>
+          <Field label="LinkedIn">
+            <div className="flex rounded-xl overflow-hidden border border-zinc-700 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-500/20 transition-colors">
+              <span className="flex items-center px-3 bg-zinc-800/80 text-zinc-500 text-xs border-r border-zinc-700 whitespace-nowrap select-none shrink-0">
+                linkedin.com/in/
+              </span>
+              <input
+                value={form.linkedin_handle}
+                onChange={(e) => setForm((f) => ({ ...f, linkedin_handle: e.target.value }))}
+                placeholder="your-name"
+                className="flex-1 bg-zinc-800 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2.5 outline-none min-w-0"
+              />
+            </div>
           </Field>
 
           {error && (
