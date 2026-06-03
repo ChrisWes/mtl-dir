@@ -47,6 +47,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
     location: user.location ?? '',
     company: user.company ?? '',
     ask_me_about: user.ask_me_about ?? [],
+    employment_status: user.employment_status ?? '',
     contact_email: user.contact_email ?? '',
     secondary_email: user.secondary_email ?? '',
     linkedin_handle: extractLinkedInHandle(user.linkedin_url),
@@ -260,6 +261,21 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
               />
             </div>
             <p className="text-xs text-zinc-600">Press Enter or comma to add a tag · max 20</p>
+          </Field>
+
+          <Field label="Employment Status">
+            <select
+              className="dkinput"
+              value={form.employment_status}
+              onChange={(e) => setForm((f) => ({ ...f, employment_status: e.target.value }))}
+              style={{ appearance: 'auto' }}
+            >
+              <option value="">Select status</option>
+              <option>Employed</option>
+              <option>Self-Employed</option>
+              <option>Open to Work</option>
+              <option>Resting</option>
+            </select>
           </Field>
 
           <Field label="Contact Email">

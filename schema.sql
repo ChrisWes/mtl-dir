@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS members (
   consent_given INTEGER NOT NULL DEFAULT 0,
   high_contrast INTEGER NOT NULL DEFAULT 0,
   access_restricted INTEGER NOT NULL DEFAULT 0,
+  employment_status TEXT,
   status TEXT NOT NULL DEFAULT 'pending',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

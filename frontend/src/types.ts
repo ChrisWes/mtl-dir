@@ -17,6 +17,7 @@ export interface Member {
   consent_given: boolean;
   high_contrast: boolean;
   access_restricted: boolean;
+  employment_status: string | null;
   status: 'pending' | 'approved';
   updated_at: string | null;
 }

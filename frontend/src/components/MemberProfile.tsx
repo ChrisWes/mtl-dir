@@ -39,6 +39,19 @@ export default function MemberProfile({ member, onBack }: Props) {
           {/* Name */}
           <h1 className="font-display text-2xl font-bold text-zinc-100 tracking-wide">{member.name ?? member.email}</h1>
 
+          {/* Employment status badge */}
+          {member.employment_status && (
+            <span className={`inline-flex items-center mt-2 text-xs font-semibold px-2.5 py-1 rounded-lg ${
+              member.employment_status === 'Open to Work'
+                ? 'bg-emerald-500/15 text-emerald-400'
+                : member.employment_status === 'Resting'
+                ? 'bg-zinc-700/60 text-zinc-400'
+                : 'bg-violet-500/15 text-violet-400'
+            }`}>
+              {member.employment_status}
+            </span>
+          )}
+
           {/* Key facts */}
           <div className="mt-4 flex flex-col gap-2.5">
             {member.company && (

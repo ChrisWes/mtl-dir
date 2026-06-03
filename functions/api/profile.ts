@@ -53,6 +53,11 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
 
   const high_contrast = body.high_contrast === true ? 1 : 0;
 
+  const ALLOWED_STATUSES = ['Employed', 'Self-Employed', 'Open to Work', 'Resting'];
+  const employment_status = typeof body.employment_status === 'string' && ALLOWED_STATUSES.includes(body.employment_status)
+    ? body.employment_status
+    : null;
+
   const rawTags = Array.isArray(body.ask_me_about) ? body.ask_me_about : [];
   const ask_me_about = JSON.stringify(
     rawTags.filter((t): t is string => typeof t === 'string').slice(0, 20).map((s) => s.slice(0, 60)),
@@ -79,10 +84,10 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
     `UPDATE members SET
       name = ?, bio = ?, location = ?, company = ?,
       contact_email = ?, secondary_email = ?, linkedin_url = ?, ask_me_about = ?,
-      avatar_url = ?, high_contrast = ?, updated_at = CURRENT_TIMESTAMP
+      avatar_url = ?, high_contrast = ?, employment_status = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
   )
-    .bind(name, bio, location, company, contact_email, secondary_email, linkedin_url, ask_me_about, avatar_url, high_contrast, user.id)
+    .bind(name, bio, location, company, contact_email, secondary_email, linkedin_url, ask_me_about, avatar_url, high_contrast, employment_status, user.id)
     .run();
 
   const updated = await env.DB.prepare('SELECT * FROM members WHERE id = ?')

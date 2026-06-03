@@ -25,6 +25,7 @@ export interface MemberRow {
   consent_given: number;
   high_contrast: number;
   access_restricted: number;
+  employment_status: string | null;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;
