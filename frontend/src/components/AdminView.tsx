@@ -183,6 +183,11 @@ function Stat({ label, value, valueClass = 'text-zinc-100' }: {
   );
 }
 
+function profileIncomplete(user: AdminUser): boolean {
+  const exemptFromCompany = user.employment_status === 'Resting' || user.employment_status === 'Open to Work';
+  return !user.location || (!user.company && !exemptFromCompany);
+}
+
 function UserRow({
   user, toggling, restricting, deleting, confirming,
   onToggle, onToggleRestriction, onDeleteClick, onDeleteConfirm, onDeleteCancel,
@@ -216,7 +221,14 @@ function UserRow({
       )}
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-zinc-200 truncate">{user.name ?? '—'}</p>
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-sm font-medium text-zinc-200 truncate">{user.name ?? '—'}</p>
+          {profileIncomplete(user) && (
+            <span className="shrink-0 text-xs font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
+              Incomplete
+            </span>
+          )}
+        </div>
         <p className="text-xs text-zinc-500 truncate">{user.email}</p>
         <p className="text-xs text-zinc-700 mt-0.5">Joined {joined}</p>
       </div>
