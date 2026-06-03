@@ -263,14 +263,15 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             <p className="text-xs text-zinc-600">Press Enter or comma to add a tag · max 20</p>
           </Field>
 
-          <Field label="Employment Status">
+          <Field label="Employment Status *">
             <select
               className="dkinput"
               value={form.employment_status}
               onChange={(e) => setForm((f) => ({ ...f, employment_status: e.target.value }))}
+              required
               style={{ appearance: 'auto' }}
             >
-              <option value="">Select status</option>
+              <option value="">Select status…</option>
               <option>Employed</option>
               <option>Self-Employed</option>
               <option>Open to Work</option>
@@ -333,7 +334,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
           <button
             type="submit"
             form="edit-profile-form"
-            disabled={saving || avatarProcessing || !form.name.trim()}
+            disabled={saving || avatarProcessing || !form.name.trim() || !form.employment_status}
             className="flex-1 py-2.5 text-sm font-medium text-white bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-xl transition-colors"
           >
             {saving ? 'Saving…' : 'Save changes'}
