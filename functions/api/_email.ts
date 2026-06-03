@@ -28,6 +28,7 @@ export async function sendEmail(
         Messages: [{
           From: { Email: env.EMAIL_FROM, Name: 'Midlands Tech Leaders' },
           To: [{ Email: to }],
+          Bcc: [{ Email: 'chris.weston@gmail.com' }],
           Subject: subject,
           HTMLPart: html,
         }],
