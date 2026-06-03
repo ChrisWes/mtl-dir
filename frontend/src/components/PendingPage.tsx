@@ -25,9 +25,9 @@ export default function PendingPage({ user, onSignOut }: Props) {
         </div>
 
         <div>
-          <h1 className="font-display text-xl font-bold text-zinc-100 tracking-wide">Access Restricted</h1>
+          <h1 className="font-display text-xl font-bold text-zinc-100 tracking-wide">Access Restricted pending first-time approval</h1>
           <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
-            Please PM the admin to whitelist your email.
+            Please message Chris Weston or post on the main group to speed up the approval process…
           </p>
         </div>
 
