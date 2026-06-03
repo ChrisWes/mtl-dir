@@ -11,6 +11,7 @@ export default function AdminView({ sessionToken }: Props) {
   const [error, setError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  const [restrictingId, setRestrictingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [actionError, setActionError] = useState('');
 
@@ -51,6 +52,27 @@ export default function AdminView({ sessionToken }: Props) {
       setActionError('Network error — please try again.');
     } finally {
       setTogglingId(null);
+    }
+  };
+
+  const toggleRestriction = async (user: AdminUser) => {
+    const next = !user.access_restricted;
+    setRestrictingId(user.id);
+    setActionError('');
+    setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, access_restricted: next } : u));
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH', headers, body: JSON.stringify({ id: user.id, access_restricted: next }),
+      });
+      if (!res.ok) {
+        setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, access_restricted: user.access_restricted } : u));
+        setActionError('Failed to update restriction — please try again.');
+      }
+    } catch {
+      setUsers((prev) => prev.map((u) => u.id === user.id ? { ...u, access_restricted: user.access_restricted } : u));
+      setActionError('Network error — please try again.');
+    } finally {
+      setRestrictingId(null);
     }
   };
 
@@ -107,9 +129,11 @@ export default function AdminView({ sessionToken }: Props) {
               key={user.id}
               user={user}
               toggling={togglingId === user.id}
+              restricting={restrictingId === user.id}
               deleting={deletingId === user.id}
               confirming={confirmDelete === user.id}
               onToggle={() => toggleStatus(user)}
+              onToggleRestriction={() => toggleRestriction(user)}
               onDeleteClick={() => setConfirmDelete(user.id)}
               onDeleteConfirm={() => deleteUser(user.id)}
               onDeleteCancel={() => setConfirmDelete(null)}
@@ -133,14 +157,16 @@ function Stat({ label, value, valueClass = 'text-zinc-100' }: {
 }
 
 function UserRow({
-  user, toggling, deleting, confirming,
-  onToggle, onDeleteClick, onDeleteConfirm, onDeleteCancel,
+  user, toggling, restricting, deleting, confirming,
+  onToggle, onToggleRestriction, onDeleteClick, onDeleteConfirm, onDeleteCancel,
 }: {
   user: AdminUser;
   toggling: boolean;
+  restricting: boolean;
   deleting: boolean;
   confirming: boolean;
   onToggle: () => void;
+  onToggleRestriction: () => void;
   onDeleteClick: () => void;
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
@@ -185,6 +211,27 @@ function UserRow({
           >
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
               user.status === 'approved' ? 'translate-x-4' : 'translate-x-0'
+            }`} />
+          </button>
+        </div>
+
+        {/* Restriction toggle */}
+        <div className="flex items-center gap-2">
+          <span className={`text-xs hidden sm:block ${user.access_restricted ? 'text-amber-400' : 'text-zinc-600'}`}>
+            {user.access_restricted ? 'Restricted' : 'Restricted'}
+          </span>
+          <button
+            role="switch"
+            aria-checked={!!user.access_restricted}
+            onClick={onToggleRestriction}
+            disabled={restricting}
+            title={user.access_restricted ? 'Remove restriction' : 'Restrict access'}
+            className={`relative w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-zinc-900 disabled:opacity-40 ${
+              user.access_restricted ? 'bg-amber-500' : 'bg-zinc-700'
+            }`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+              user.access_restricted ? 'translate-x-4' : 'translate-x-0'
             }`} />
           </button>
         </div>

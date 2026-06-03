@@ -24,6 +24,7 @@ export interface MemberRow {
   avatar_url: string | null;
   consent_given: number;
   high_contrast: number;
+  access_restricted: number;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;

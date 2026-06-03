@@ -1,1 +1,1 @@
-ALTER TABLE members ADD COLUMN secondary_email TEXT;
+ALTER TABLE members ADD COLUMN access_restricted INTEGER NOT NULL DEFAULT 0;

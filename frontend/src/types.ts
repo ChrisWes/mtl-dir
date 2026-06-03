@@ -16,6 +16,7 @@ export interface Member {
   avatar_url: string | null;
   consent_given: boolean;
   high_contrast: boolean;
+  access_restricted: boolean;
   status: 'pending' | 'approved';
   updated_at: string | null;
 }

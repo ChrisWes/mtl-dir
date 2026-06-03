@@ -17,6 +17,7 @@ interface Props {
 
 export default function Directory({ sessionToken, currentUser, onUserUpdate, onSignOut }: Props) {
   const isAdmin = currentUser.email === ADMIN_EMAIL;
+  const hasFullAccess = !currentUser.access_restricted && !!(currentUser.company && currentUser.location);
   const [view, setView] = useState<'members' | 'admin' | 'profile'>('members');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
@@ -149,8 +150,48 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400">{error}</div>
         )}
 
-        {/* Grid */}
-        {!loading && members.length === 0 && !error && (
+        {/* Restricted view: banner + name-only list */}
+        {!hasFullAccess && (
+          <>
+            <div className="flex items-start gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
+              <svg className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-amber-300">Please complete your profile to see the full directory</p>
+                <p className="text-xs text-amber-400/70 mt-0.5">Add your company and location to unlock member details.</p>
+              </div>
+              <button
+                onClick={() => setShowEdit(true)}
+                className="shrink-0 text-xs font-medium text-amber-300 hover:text-amber-200 underline underline-offset-2 transition-colors"
+              >
+                Edit profile →
+              </button>
+            </div>
+            {!loading && (
+              <div className="flex flex-col gap-2">
+                {members.map((m) => {
+                  const initials = (m.name ?? m.email).split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+                  return (
+                    <div key={m.id} className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex items-center gap-3">
+                      {m.avatar_url ? (
+                        <img src={m.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-zinc-700" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-violet-500/15 text-violet-400 flex items-center justify-center text-xs font-semibold shrink-0">
+                          {initials}
+                        </div>
+                      )}
+                      <span className="text-sm text-zinc-300">{m.name ?? m.email}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Full access: card grid */}
+        {hasFullAccess && !loading && members.length === 0 && !error && (
           <div className="text-center py-20 text-zinc-700">
             <svg className="w-10 h-10 mx-auto mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
@@ -158,12 +199,13 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
             <p className="text-sm">No members found</p>
           </div>
         )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {members.map((m) => (
-            <MemberCard key={m.id} member={m} onClick={() => { setSelectedMember(m); setView('profile'); }} />
-          ))}
-        </div>
+        {hasFullAccess && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {members.map((m) => (
+              <MemberCard key={m.id} member={m} onClick={() => { setSelectedMember(m); setView('profile'); }} />
+            ))}
+          </div>
+        )}
       </main>
 
       <Footer />

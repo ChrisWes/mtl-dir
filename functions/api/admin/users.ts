@@ -17,6 +17,8 @@ interface AdminMemberRow {
   linkedin_url: string | null;
   avatar_url: string | null;
   consent_given: number;
+  high_contrast: number;
+  access_restricted: number;
   status: 'pending' | 'approved';
   created_at: string;
   updated_at: string;
@@ -52,7 +54,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   const { err } = await requireAdmin(request, env);
   if (err) return err;
 
-  let body: { id?: number; status?: string };
+  let body: { id?: number; status?: string; access_restricted?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -60,6 +62,17 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   }
 
   if (!body.id) return json({ error: 'Missing id' }, 400);
+
+  // Branch: toggle access_restricted
+  if (typeof body.access_restricted === 'boolean') {
+    await env.DB.prepare(
+      `UPDATE members SET access_restricted = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+    )
+      .bind(body.access_restricted ? 1 : 0, body.id)
+      .run();
+    return json({ ok: true });
+  }
+
   if (body.status !== 'pending' && body.status !== 'approved') {
     return json({ error: 'status must be pending or approved' }, 400);
   }
