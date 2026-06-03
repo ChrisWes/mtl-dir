@@ -110,7 +110,7 @@ export default function Directory({ sessionToken, currentUser, onUserUpdate, onS
         </div>
       </header>
 
-      {view === 'admin' && <AdminView sessionToken={sessionToken} />}
+      {view === 'admin' && <AdminView sessionToken={sessionToken} onBack={() => setView('members')} />}
 
       {view === 'profile' && selectedMember && (
         <MemberProfile member={selectedMember} onBack={() => setView('members')} />

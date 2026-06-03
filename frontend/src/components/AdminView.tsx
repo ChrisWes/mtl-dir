@@ -3,9 +3,10 @@ import type { AdminUser } from '../types';
 
 interface Props {
   sessionToken: string;
+  onBack: () => void;
 }
 
-export default function AdminView({ sessionToken }: Props) {
+export default function AdminView({ sessionToken, onBack }: Props) {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -97,8 +98,22 @@ export default function AdminView({ sessionToken }: Props) {
   const pending = users.filter((u) => u.status === 'pending').length;
   const approved = users.filter((u) => u.status === 'approved').length;
 
+  const BackLink = () => (
+    <button
+      onClick={onBack}
+      className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-violet-400 transition-colors self-start"
+    >
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+      Back to directory
+    </button>
+  );
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-5">
+      <BackLink />
+
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <Stat label="Total" value={users.length} />
@@ -141,6 +156,8 @@ export default function AdminView({ sessionToken }: Props) {
           ))}
         </div>
       )}
+
+      <BackLink />
     </div>
   );
 }
