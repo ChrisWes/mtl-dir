@@ -1,6 +1,9 @@
 export interface Env {
   DB: D1Database;
   GOOGLE_CLIENT_ID: string;
+  SMTP_USERNAME?: string;
+  SMTP_PASSWORD?: string;
+  EMAIL_FROM?: string;
 }
 
 export interface MemberRow {

@@ -1,4 +1,5 @@
 import { Env, getSessionUser, json, parseTechStack } from '../_shared';
+import { sendEmail, approvedEmail } from '../_email';
 
 const ADMIN_EMAIL = 'chris.weston@gmail.com';
 
@@ -68,6 +69,19 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   )
     .bind(body.status, body.id)
     .run();
+
+  // Send approval email when a member is approved
+  if (body.status === 'approved') {
+    const member = await env.DB.prepare('SELECT email, name FROM members WHERE id = ?')
+      .bind(body.id)
+      .first<{ email: string; name: string | null }>();
+    if (member) {
+      const siteUrl = new URL(context.request.url).origin;
+      context.waitUntil(
+        sendEmail(env, member.email, "You're approved — welcome to Midlands Tech Leaders!", approvedEmail(member.name, siteUrl)),
+      );
+    }
+  }
 
   return json({ ok: true });
 };

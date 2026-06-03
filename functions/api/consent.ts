@@ -1,4 +1,5 @@
 import { Env, getSessionUser, json } from './_shared';
+import { sendEmail, welcomeEmail } from './_email';
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
@@ -10,6 +11,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   )
     .bind(user.id)
     .run();
+
+  // Fire-and-forget welcome email — error never blocks the response
+  context.waitUntil(
+    sendEmail(env, user.email, 'Welcome to Midlands Tech Leaders', welcomeEmail(user.name)),
+  );
 
   return json({ ok: true });
 };
