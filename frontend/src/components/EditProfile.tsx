@@ -268,7 +268,7 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
             <p className="text-xs text-zinc-600">Press Enter or comma to add a tag · max 20</p>
           </Field>
 
-          <Field label="Employment Status *">
+          <Field label="Employment Status (mandatory)">
             <select
               className="dkinput"
               value={form.employment_status}
