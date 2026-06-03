@@ -52,8 +52,8 @@ export function welcomeEmail(name: string | null): string {
       <div style="background:#18181b;border:1px solid #27272a;border-radius:16px;padding:32px;">
         <p style="margin:0 0 4px;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#7c3aed;">Midlands Tech Leaders</p>
         <h1 style="margin:0 0 20px;font-size:22px;font-weight:700;color:#f4f4f5;line-height:1.3;">Thanks for signing up, ${displayName}!</h1>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#a1a1aa;">Your account has been created and is currently <strong style="color:#f4f4f5;">pending approval</strong> by our admin team. We'll review it shortly.</p>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#a1a1aa;">Once approved, you'll have full access to our private member directory — search by name, company, and area of expertise, and connect with other tech leaders across the Midlands.</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#a1a1aa;">Your account has been created and is currently <strong style="color:#f4f4f5;">pending approval</strong>. We'll review it shortly.</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#a1a1aa;">Once approved, please update your details as much as you can as that makes this more valuable to the community at large. You can do this by clicking/pressing your name or pic at the top right of the app.</p>
         <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#a1a1aa;">We'll send you another email as soon as you're in.</p>
         <hr style="border:none;border-top:1px solid #27272a;margin:24px 0;" />
         <p style="margin:0;font-size:13px;color:#52525b;font-style:italic;">Built for the community, for the community.</p>
