@@ -139,6 +139,16 @@ export default function AdminView({ sessionToken, onBack }: Props) {
         <p className="text-center py-16 text-sm text-zinc-600">No users yet.</p>
       ) : (
         <div className="flex flex-col gap-2">
+          {/* Column labels */}
+          <div className="flex items-center px-4">
+            <div className="flex-1" />
+            <div className="flex items-center gap-3 shrink-0 text-xs text-zinc-600 uppercase tracking-widest">
+              <span className="w-[88px] text-center">Approved</span>
+              <span className="w-[88px] text-center">Restricted</span>
+              <span className="w-7" />
+            </div>
+          </div>
+
           {users.map((user) => (
             <UserRow
               key={user.id}
