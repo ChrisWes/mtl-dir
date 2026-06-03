@@ -124,6 +124,11 @@ export default function EditProfile({ user, sessionToken, onSave, onClose }: Pro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.employment_status) {
+      setError('Please select an employment status.');
+      return;
+    }
+
     setSaving(true);
     setError('');
 
