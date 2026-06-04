@@ -90,9 +90,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
       .first<{ email: string; name: string | null }>();
     if (member) {
       const siteUrl = new URL(context.request.url).origin;
-      context.waitUntil(
-        sendEmail(env, member.email, "You're approved — welcome to Midlands Tech Leaders!", approvedEmail(member.name, siteUrl)),
-      );
+      await sendEmail(env, member.email, "You're approved — welcome to Midlands Tech Leaders!", approvedEmail(member.name, siteUrl));
     }
   }
 
