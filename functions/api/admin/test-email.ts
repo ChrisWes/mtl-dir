@@ -1,14 +1,11 @@
-import { Env, getSessionUser, json } from '../_shared';
+import { Env, json } from '../_shared';
 
 const ADMIN_EMAIL = 'chris.weston@gmail.com';
 
 // Diagnostic endpoint — hit GET /api/admin/test-email to send a test email
 // and see the full Mailjet response. Remove once emails are confirmed working.
 export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
-
-  const user = await getSessionUser(request, env);
-  if (!user || user.email !== ADMIN_EMAIL) return json({ error: 'Forbidden' }, 403);
+  const { env } = context;
 
   // Report what credentials are visible
   const credCheck = {
