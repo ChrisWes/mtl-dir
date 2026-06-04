@@ -27,6 +27,7 @@ export async function sendEmail(
       body: JSON.stringify({
         Messages: [{
           From: { Email: env.EMAIL_FROM, Name: 'Midlands Tech Leaders' },
+          ReplyTo: { Email: 'chris.weston@gmail.com' },
           To: [{ Email: to }],
           Bcc: [{ Email: 'chris.weston@gmail.com' }],
           Subject: subject,
